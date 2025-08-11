@@ -45,6 +45,24 @@ class Config:
             'log_format': Constants.CONFIG_DEFAULT_LOG_FORMAT,
             'log_date_format': Constants.CONFIG_DEFAULT_LOG_DATE_FORMAT,
         }
+        cls._config['downloader'] = {
+            'save_credentials': Constants.CONFIG_DOWNLOADER_SAVE_CREDENTIALS,
+            'credentials_file': Constants.CONFIG_DOWNLOADER_CREDENTIALS_FILE,
+            'output_format': Constants.CONFIG_DOWNLOADER_OUTPUT_FORMAT,
+            'output_dir': Constants.CONFIG_DOWNLOADER_OUTPUT_DIR,
+            'download_lyrics': Constants.CONFIG_DOWNLOADER_DOWNLOAD_LYRICS,
+            'format': Constants.CONFIG_DOWNLOADER_FORMAT,
+            'quality': Constants.CONFIG_DOWNLOADER_QUALITY,
+            'transcode_bitrate': Constants.CONFIG_DOWNLOADER_TRANSCODE_BITRATE,
+            'skip_existing_files': Constants.CONFIG_DOWNLOADER_SKIP_EXISTING_FILES,
+            'skip_previously_downloaded': Constants.CONFIG_DOWNLOADER_SKIP_PREVIOUSLY_DOWNLOADED,
+            'skip_download_on_error': Constants.CONFIG_DOWNLOADER_SKIP_DOWNLOAD_ON_ERROR,
+            'retry_attempts': Constants.CONFIG_DOWNLOADER_RETRY_ATTEMPTS,
+            'bulk_wait_time': Constants.CONFIG_DOWNLOADER_BULK_WAIT_TIME,
+            'override_auto_wait': Constants.CONFIG_DOWNLOADER_OVERRIDE_AUTO_WAIT,
+            'chunk_size': Constants.CONFIG_DOWNLOADER_CHUNK_SIZE,
+            'real_time': Constants.CONFIG_DOWNLOADER_REAL_TIME,
+        }
 
     @classmethod
     def _save_settings(cls) -> None:
