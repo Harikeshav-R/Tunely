@@ -46,6 +46,7 @@ class Config:
             'log_date_format': Constants.CONFIG_DEFAULT_LOG_DATE_FORMAT,
         }
         cls._config['downloader'] = {
+            'login_retry_attempts': Constants.CONFIG_DOWNLOADER_LOGIN_RETRY_ATTEMPTS,
             'save_credentials': Constants.CONFIG_DOWNLOADER_SAVE_CREDENTIALS,
             'credentials_file': Constants.CONFIG_DOWNLOADER_CREDENTIALS_FILE,
             'output_format': Constants.CONFIG_DOWNLOADER_OUTPUT_FORMAT,
