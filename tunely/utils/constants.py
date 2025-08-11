@@ -23,8 +23,6 @@ class Constants:
 
     CONFIG_DOWNLOADER_LOGIN_RETRY_ATTEMPTS = 3
     CONFIG_DOWNLOADER_LANGUAGE = 'en'
-    CONFIG_DOWNLOADER_SAVE_CREDENTIALS = True
-    CONFIG_DOWNLOADER_CREDENTIALS_FILE = Path(user_data_dir(APP_NAME, APP_AUTHOR), 'credentials.json').resolve()
     CONFIG_DOWNLOADER_OUTPUT_FORMAT = "{artist}/{album}/{song_name}.{ext}"
     CONFIG_DOWNLOADER_OUTPUT_DIR = Path(user_data_dir(APP_NAME, APP_AUTHOR), 'music').resolve()
     CONFIG_DOWNLOADER_DOWNLOAD_LYRICS = True
