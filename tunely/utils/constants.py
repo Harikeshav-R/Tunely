@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from appdirs import user_config_dir, user_cache_dir, user_data_dir, user_log_dir
+from platformdirs import user_config_dir, user_cache_dir, user_data_dir, user_log_dir, user_music_dir
 
 
 class Constants:
@@ -18,13 +18,12 @@ class Constants:
     CONFIG_DEFAULT_CONFIG_DIR = Path(user_config_dir(APP_NAME, APP_AUTHOR)).resolve()
     CONFIG_DEFAULT_CONFIG_FILE = CONFIG_DEFAULT_CONFIG_DIR / 'config.ini'
 
-    CONFIG_DEFAULT_DATABASE_DIR = Path(user_data_dir(APP_NAME, APP_AUTHOR), 'databases').resolve()
+    CONFIG_DEFAULT_DATABASE_DIR = Path(user_data_dir(APP_NAME, APP_AUTHOR)).resolve()
     CONFIG_DEFAULT_DATABASE_FILE = CONFIG_DEFAULT_DATABASE_DIR / 'tunely.db'
 
     CONFIG_DOWNLOADER_LOGIN_RETRY_ATTEMPTS = 3
     CONFIG_DOWNLOADER_LANGUAGE = 'en'
-    CONFIG_DOWNLOADER_OUTPUT_FORMAT = "{artist}/{album}/{song_name}.{ext}"
-    CONFIG_DOWNLOADER_OUTPUT_DIR = Path(user_data_dir(APP_NAME, APP_AUTHOR), 'music').resolve()
+    CONFIG_DOWNLOADER_OUTPUT_DIR = Path(user_music_dir(), "Tunely").resolve()
     CONFIG_DOWNLOADER_DOWNLOAD_LYRICS = True
     CONFIG_DOWNLOADER_FORMAT = "ogg"
     CONFIG_DOWNLOADER_QUALITY = "auto"

@@ -4,7 +4,6 @@ import os
 import shutil
 
 from datetime import datetime
-from pathlib import Path
 from typing import Any
 
 from tunely.utils.constants import Constants
@@ -47,7 +46,6 @@ class Config:
         cls._config['downloader'] = {
             'login_retry_attempts': Constants.CONFIG_DOWNLOADER_LOGIN_RETRY_ATTEMPTS,
             'language': Constants.CONFIG_DOWNLOADER_LANGUAGE,
-            'output_format': Constants.CONFIG_DOWNLOADER_OUTPUT_FORMAT,
             'output_dir': Constants.CONFIG_DOWNLOADER_OUTPUT_DIR,
             'download_lyrics': Constants.CONFIG_DOWNLOADER_DOWNLOAD_LYRICS,
             'format': Constants.CONFIG_DOWNLOADER_FORMAT,
