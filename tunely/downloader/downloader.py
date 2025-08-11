@@ -15,6 +15,7 @@ from librespot.metadata import PlayableId
 
 from tunely.utils.config import Config
 from tunely.utils.constants import Constants
+from tunely.utils.db import Account, Database
 
 _logger = logging.getLogger(__name__)
 
@@ -23,42 +24,50 @@ class Downloader:
     session: Session = None
 
     @classmethod
-    def login(cls) -> None:
+    def login(cls, user_name: str = None) -> None:
         """
-        Attempts to login to Spotify using stored credentials or OAuth authentication.
+        Attempts to login a user either through stored credentials or OAuth. Handles retries in case of failure.
+        If a username is provided, the method first attempts to use stored credentials associated with that username.
+        Otherwise, it uses OAuth authentication and retries login according to the configured number of attempts.
 
-        First, the method checks for stored credentials at a predefined location. If stored
-        credentials exist, it will attempt to use them for login. If that fails or the credentials
-        do not exist, the method performs an OAuth login, allowing multiple retry attempts as
-        configured.
-
-        If login is successful, the credentials are saved locally to enable easier logins in
-        future sessions. The credentials file is securely written to its specified location and
-        deleted from the local directory afterward. The method also executes a callback function
-        to handle the OAuth URL during the login flow.
-
-        If all login attempts fail due to connection issues or other errors, the method raises
-        a `ConnectionError`.
-
-        :raises ConnectionError: If all attempts to log in to Spotify fail due to network issues
-            or invalid credentials.
+        :param user_name: The username of the account to login with. Default is None.
+        :type user_name: str, optional
+        :return: None
+        :rtype: None
+        :raises ConnectionError: If unable to login after the configured number of retries.
         """
 
         def auth_url_callback(url):
+            # TODO: Modify this to use a GUI or terminal interface for input
             print(url)
 
-        credentials_file_path = Path(
-            Config.get("downloader", "credentials_file", Constants.CONFIG_DOWNLOADER_CREDENTIALS_FILE)).resolve()
+        if user_name:
+            account = Database.get_account_by_user_name(user_name)
 
-        if credentials_file_path.exists():
-            try:
-                _logger.info("Stored credentials found, trying to login using stored credentials")
-                cls.session = Session.Builder().stored_file().create()
-                _logger.info("Logged in successfully")
-                return
+            if account is not None:
+                try:
+                    _logger.info("Stored credentials found, trying to login using stored credentials")
+                    cls.session = Session.Builder().stored(
+                        json.dumps(
+                            {
+                                "username": account.user_name,
+                                "credentials": account.credentials,
+                                "type": account.type
+                            }
+                        )
+                    ).create()
+                    _logger.info("Logged in successfully")
+                    return
 
-            except:
-                _logger.warning("Failed to login using stored credentials, trying to login using OAuth")
+                except:
+                    Database.delete_account(account=account)
+                    _logger.warning(
+                        f"Failed to login using stored credentials for user {account.user_name}, deleting account. Trying to login using OAuth."
+                    )
+                    pass
+
+            else:
+                _logger.warning("No stored credentials found, trying to login using OAuth")
                 pass
 
         login_retry_attempts = int(
@@ -81,21 +90,22 @@ class Downloader:
                 continue
 
             finally:
-                _logger.info("Logged in successfully")
-
                 local_credentials_file_path = Path("credentials.json").resolve()
 
                 if local_credentials_file_path.exists():
-                    with open(credentials_file_path, "w") as credentials_file:
-                        credentials_file.write(open(local_credentials_file_path).read())
-                        local_credentials_file_path.unlink(missing_ok=True)
+                    credentials = json.loads(local_credentials_file_path.read_text())
 
-                    _logger.info("Login saved for future use")
+                    Database.create_account(user_name=credentials["username"], credentials=credentials["credentials"],
+                                            type_=credentials["type"])
+
+                    local_credentials_file_path.unlink(missing_ok=True)
+
+                    _logger.info("Logged in successfully")
 
                     break
 
                 else:
-                    _logger.warning("Failed to save login credentials, retrying login in 3 seconds...")
+                    _logger.warning("Failed to log in, retrying login in 3 seconds...")
                     time.sleep(3)
 
                     continue
