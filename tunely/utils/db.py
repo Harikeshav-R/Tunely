@@ -64,6 +64,10 @@ class Database:
         return cls._session.query(Account).filter(Account.user_name == user_name).first()
 
     @classmethod
+    def get_accounts(cls) -> list[type[Account]]:
+        return cls._session.query(Account).all()
+
+    @classmethod
     def update_account(cls, account: Account):
         cls._session.add(account)
         cls._session.commit()
@@ -86,6 +90,10 @@ class Database:
     @classmethod
     def get_downloaded_songs_by_id(cls, song_id: str) -> DownloadedSong | None:
         return cls._session.query(DownloadedSong).filter(DownloadedSong.song_id == song_id).first()
+
+    @classmethod
+    def get_downloaded_songs(cls) -> list[type[DownloadedSong]]:
+        return cls._session.query(DownloadedSong).all()
 
     @classmethod
     def update_downloaded_song(cls, song: DownloadedSong):
