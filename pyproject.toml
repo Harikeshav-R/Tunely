@@ -7,6 +7,8 @@ dependencies = [
     "appdirs>=1.4.4",
     "colorlog>=6.9.0",
     "librespot",
+    "music-tag>=0.4.3",
+    "sqlalchemy>=2.0.43",
 ]
 
 [tool.uv.sources]
