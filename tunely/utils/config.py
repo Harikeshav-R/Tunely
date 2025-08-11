@@ -14,9 +14,9 @@ _logger = logging.getLogger(__name__)
 
 class Config:
     _config = configparser.ConfigParser()
-    _config_file_path = Path(Constants.DEFAULT_CONFIG_DIR, Constants.DEFAULT_CONFIG_FILE).resolve()
+    _config_file_path = Path(Constants.CONFIG_DEFAULT_CONFIG_DIR, Constants.CONFIG_DEFAULT_CONFIG_FILE).resolve()
 
-    os.makedirs(Constants.DEFAULT_CONFIG_DIR, exist_ok=True)
+    os.makedirs(Constants.CONFIG_DEFAULT_CONFIG_DIR, exist_ok=True)
 
     @classmethod
     def _generate_default_settings(cls) -> None:
@@ -33,17 +33,17 @@ class Config:
         _logger.info("Generating default settings")
 
         cls._config['database'] = {
-            'db_dir': Constants.DEFAULT_DATABASE_DIR,
-            'db_file': Constants.DEFAULT_DATABASE_FILE,
+            'db_dir': Constants.CONFIG_DEFAULT_DATABASE_DIR,
+            'db_file': Constants.CONFIG_DEFAULT_DATABASE_FILE,
         }
         cls._config['logging'] = {
-            'log_dir': Constants.DEFAULT_LOG_DIR,
-            'log_file': Constants.DEFAULT_LOG_FILE,
-            'log_level': Constants.DEFAULT_LOG_LEVEL,
-            'log_max_bytes': Constants.DEFAULT_LOG_MAX_BYTES,
-            'log_backup_count': Constants.DEFAULT_LOG_BACKUP_COUNT,
-            'log_format': Constants.DEFAULT_LOG_FORMAT,
-            'log_date_format': Constants.DEFAULT_LOG_DATE_FORMAT,
+            'log_dir': Constants.CONFIG_DEFAULT_LOG_DIR,
+            'log_file': Constants.CONFIG_DEFAULT_LOG_FILE,
+            'log_level': Constants.CONFIG_DEFAULT_LOG_LEVEL,
+            'log_max_bytes': Constants.CONFIG_DEFAULT_LOG_MAX_BYTES,
+            'log_backup_count': Constants.CONFIG_DEFAULT_LOG_BACKUP_COUNT,
+            'log_format': Constants.CONFIG_DEFAULT_LOG_FORMAT,
+            'log_date_format': Constants.CONFIG_DEFAULT_LOG_DATE_FORMAT,
         }
 
     @classmethod

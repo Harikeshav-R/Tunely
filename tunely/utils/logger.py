@@ -119,13 +119,13 @@ class Logger:
         :return: None
         """
         cls._setup_handlers(
-            Constants.DEFAULT_LOG_DIR,
-            Constants.DEFAULT_LOG_FILE,
-            Constants.DEFAULT_LOG_MAX_BYTES,
-            Constants.DEFAULT_LOG_BACKUP_COUNT,
-            Constants.DEFAULT_LOG_LEVEL,
-            Constants.DEFAULT_LOG_FORMAT,
-            Constants.DEFAULT_LOG_DATE_FORMAT
+            Constants.CONFIG_DEFAULT_LOG_DIR,
+            Constants.CONFIG_DEFAULT_LOG_FILE,
+            Constants.CONFIG_DEFAULT_LOG_MAX_BYTES,
+            Constants.CONFIG_DEFAULT_LOG_BACKUP_COUNT,
+            Constants.CONFIG_DEFAULT_LOG_LEVEL,
+            Constants.CONFIG_DEFAULT_LOG_FORMAT,
+            Constants.CONFIG_DEFAULT_LOG_DATE_FORMAT
         )
 
     @classmethod
@@ -139,14 +139,14 @@ class Logger:
 
         :raises ValueError: If any of the configuration values are invalid.
         """
-        log_dir = Config.get('logging', 'log_dir', default=Constants.DEFAULT_LOG_DIR)
-        log_file = Config.get('logging', 'log_file', default=Constants.DEFAULT_LOG_FILE)
-        max_bytes = int(Config.get('logging', 'log_max_bytes', default=Constants.DEFAULT_LOG_MAX_BYTES))
+        log_dir = Config.get('logging', 'log_dir', default=Constants.CONFIG_DEFAULT_LOG_DIR)
+        log_file = Config.get('logging', 'log_file', default=Constants.CONFIG_DEFAULT_LOG_FILE)
+        max_bytes = int(Config.get('logging', 'log_max_bytes', default=Constants.CONFIG_DEFAULT_LOG_MAX_BYTES))
         backup_count = int(
-            Config.get('logging', 'log_backup_count', default=Constants.DEFAULT_LOG_BACKUP_COUNT))
-        level = Config.get('logging', 'log_level', default=Constants.DEFAULT_LOG_LEVEL)
-        log_format = Config.get('logging', 'log_format', default=Constants.DEFAULT_LOG_FORMAT)
-        log_date_format = Config.get('logging', 'log_date_format', default=Constants.DEFAULT_LOG_DATE_FORMAT)
+            Config.get('logging', 'log_backup_count', default=Constants.CONFIG_DEFAULT_LOG_BACKUP_COUNT))
+        level = Config.get('logging', 'log_level', default=Constants.CONFIG_DEFAULT_LOG_LEVEL)
+        log_format = Config.get('logging', 'log_format', default=Constants.CONFIG_DEFAULT_LOG_FORMAT)
+        log_date_format = Config.get('logging', 'log_date_format', default=Constants.CONFIG_DEFAULT_LOG_DATE_FORMAT)
 
         cls._setup_handlers(log_dir, log_file, max_bytes, backup_count, level, log_format, log_date_format)
 
