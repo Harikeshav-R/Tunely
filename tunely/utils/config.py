@@ -14,7 +14,7 @@ _logger = logging.getLogger(__name__)
 
 class Config:
     _config = configparser.ConfigParser()
-    _config_file_path = Path(Constants.CONFIG_DEFAULT_CONFIG_DIR, Constants.CONFIG_DEFAULT_CONFIG_FILE).resolve()
+    _config_file_path = Constants.CONFIG_DEFAULT_CONFIG_FILE
 
     os.makedirs(Constants.CONFIG_DEFAULT_CONFIG_DIR, exist_ok=True)
 
@@ -33,7 +33,6 @@ class Config:
         _logger.info("Generating default settings")
 
         cls._config['database'] = {
-            'db_dir': Constants.CONFIG_DEFAULT_DATABASE_DIR,
             'db_file': Constants.CONFIG_DEFAULT_DATABASE_FILE,
         }
         cls._config['logging'] = {
