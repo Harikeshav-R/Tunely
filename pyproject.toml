@@ -4,10 +4,10 @@ version = "0.1.0"
 description = "Music Downloader"
 requires-python = ">=3.13"
 dependencies = [
-    "appdirs>=1.4.4",
     "colorlog>=6.9.0",
     "librespot",
     "music-tag>=0.4.3",
+    "platformdirs>=4.3.8",
     "sqlalchemy>=2.0.43",
 ]
 
