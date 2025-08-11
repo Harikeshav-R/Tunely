@@ -47,6 +47,7 @@ class Config:
         }
         cls._config['downloader'] = {
             'login_retry_attempts': Constants.CONFIG_DOWNLOADER_LOGIN_RETRY_ATTEMPTS,
+            'language': Constants.CONFIG_DOWNLOADER_LANGUAGE,
             'save_credentials': Constants.CONFIG_DOWNLOADER_SAVE_CREDENTIALS,
             'credentials_file': Constants.CONFIG_DOWNLOADER_CREDENTIALS_FILE,
             'output_format': Constants.CONFIG_DOWNLOADER_OUTPUT_FORMAT,
