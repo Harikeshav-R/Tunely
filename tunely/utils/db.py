@@ -1,0 +1,98 @@
+import os
+
+from datetime import datetime, UTC
+from pathlib import Path
+
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy.orm import declarative_base, sessionmaker, relationship
+
+from tunely.utils.config import Config
+from tunely.utils.constants import Constants
+
+Base = declarative_base()
+
+
+class Account(Base):
+    __tablename__ = 'accounts'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_name = Column(String, nullable=False)
+    credentials = Column(String, nullable=False)
+    type = Column(String, nullable=False)
+
+
+class DownloadedSong(Base):
+    __tablename__ = 'downloaded_songs'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    song_id = Column(String, nullable=False)
+    download_path = Column(String, nullable=False)
+    time = Column(DateTime, default=datetime.now(UTC), nullable=False)
+
+    account_id = Column(Integer, ForeignKey('accounts.id'), nullable=False)
+    account = relationship("Account", back_populates="downloaded_songs")
+
+    @property
+    def path(self) -> Path:
+        return Path(self.download_path)
+
+    @path.setter
+    def path(self, value: Path):
+        self.download_path = str(value)
+
+
+class Database:
+    os.makedirs(Constants.CONFIG_DEFAULT_DATABASE_DIR, exist_ok=True)
+    _engine = create_engine(f"sqlite://{Config.get("database", "db_file")}", echo=True)
+    Base.metadata.create_all(_engine)
+
+    _Session = sessionmaker(bind=_engine)
+    _session = _Session()
+
+    @classmethod
+    def create_account(cls, user_name: str, credentials: str, type_: str):
+        new_account = Account(user_name=user_name, credentials=credentials, type=type_)
+        cls._session.add(new_account)
+        cls._session.commit()
+
+    @classmethod
+    def get_account_by_id(cls, account_id: int) -> Account | None:
+        return cls._session.query(Account).filter(Account.id == account_id).first()
+
+    @classmethod
+    def get_account_by_user_name(cls, user_name: str) -> Account | None:
+        return cls._session.query(Account).filter(Account.user_name == user_name).first()
+
+    @classmethod
+    def update_account(cls, account: Account):
+        cls._session.add(account)
+        cls._session.commit()
+
+    @classmethod
+    def delete_account(cls, account: Account):
+        cls._session.delete(account)
+        cls._session.commit()
+
+    @classmethod
+    def create_downloaded_song(cls, song_id: str, account: Account, path: str):
+        new_downloaded_song = DownloadedSong(song_id=song_id, download_path=path, account_id=account.id)
+        cls._session.add(new_downloaded_song)
+        cls._session.commit()
+
+    @classmethod
+    def get_downloaded_songs_by_account(cls, account: Account) -> list[type[DownloadedSong]]:
+        return cls._session.query(DownloadedSong).filter(DownloadedSong.account_id == account.id).all()
+
+    @classmethod
+    def get_downloaded_songs_by_id(cls, song_id: str) -> DownloadedSong | None:
+        return cls._session.query(DownloadedSong).filter(DownloadedSong.song_id == song_id).first()
+
+    @classmethod
+    def update_downloaded_song(cls, song: DownloadedSong):
+        cls._session.add(song)
+        cls._session.commit()
+
+    @classmethod
+    def delete_downloaded_song(cls, song: DownloadedSong):
+        cls._session.delete(song)
+        cls._session.commit()
