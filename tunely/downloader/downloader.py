@@ -8,8 +8,9 @@ import requests
 
 from pathlib import Path
 
-from librespot.audio.decoders import VorbisOnlyAudioQuality
+from librespot.audio.decoders import VorbisOnlyAudioQuality, AudioQuality
 from librespot.core import Session
+from librespot.metadata import PlayableId
 
 from tunely.utils.config import Config
 from tunely.utils.constants import Constants
@@ -81,3 +82,34 @@ class Downloader:
         else:
             _logger.error("Failed to login to Spotify")
             raise ConnectionError("Could not login to Spotify")
+
+    @classmethod
+    def get_content_stream(cls, content_id: PlayableId, quality: AudioQuality):
+        return cls.session.content_feeder().load(content_id, VorbisOnlyAudioQuality(quality), False, None)
+
+    @classmethod
+    def __get_auth_token(cls):
+        return cls.session.tokens().get_token(
+            Constants.SPOTIFY_USER_READ_EMAIL, Constants.SPOTIFY_PLAYLIST_READ_PRIVATE,
+            Constants.SPOTIFY_USER_LIBRARY_READ, Constants.SPOTIFY_USER_FOLLOW_READ
+        ).access_token
+
+    @classmethod
+    def get_auth_header(cls):
+        return {
+            'Authorization': f'Bearer {cls.__get_auth_token()}',
+            'Accept-Language': f'{Config.get("downloader", "language", Constants.CONFIG_DOWNLOADER_LANGUAGE)}',
+            'Accept': 'application/json',
+            'app-platform': 'WebPlayer'
+        }
+
+    @classmethod
+    def get_auth_header_and_params(cls, limit, offset):
+        return {
+            'Authorization': f'Bearer {cls.__get_auth_token()}',
+            'Accept-Language': f'{Config.get("downloader", "language", Constants.CONFIG_DOWNLOADER_LANGUAGE)}',
+            'Accept': 'application/json',
+            'app-platform': 'WebPlayer'
+        }, {Constants.SPOTIFY_LIMIT: limit, Constants.SPOTIFY_OFFSET: offset}
+
+
