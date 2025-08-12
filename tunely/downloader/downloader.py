@@ -224,6 +224,27 @@ class Downloader:
         return response_text, response_json
 
     @classmethod
+    def invoke_url_with_params(cls, url: str, limit: int, offset: int, **kwargs) -> dict:
+        """
+        Invokes the specified URL with query parameters and authentication headers. Useful for
+        making GET requests to endpoints requiring authentication. This method constructs
+        parameters with pagination support and allows additional custom parameters.
+
+        :param url: The URL to send the GET request to
+        :type url: str
+        :param limit: The pagination limit
+        :type limit: int
+        :param offset: The pagination offset
+        :type offset: int
+        :param kwargs: Additional parameters to include in the GET request
+        :return: The response JSON from the GET request
+        :rtype: dict
+        """
+        headers, params = cls.get_auth_header_and_params(limit=limit, offset=offset)
+        params.update(kwargs)
+        return requests.get(url, headers=headers, params=params).json()
+
+    @classmethod
     def check_premium(cls) -> bool:
         """
         Checks if the current user has a Spotify Premium subscription.
