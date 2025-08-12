@@ -15,7 +15,7 @@ from librespot.metadata import PlayableId
 
 from tunely.utils.config import Config
 from tunely.utils.constants import Constants
-from tunely.utils.db import Account, Database
+from tunely.utils.db import Database
 
 _logger = logging.getLogger(__name__)
 
