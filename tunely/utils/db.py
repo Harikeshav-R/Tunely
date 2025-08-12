@@ -1,3 +1,4 @@
+import logging
 import os
 
 from datetime import datetime, UTC
@@ -8,6 +9,8 @@ from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 
 from tunely.utils.config import Config
 from tunely.utils.constants import Constants
+
+_logger = logging.getLogger(__name__)
 
 Base = declarative_base()
 
@@ -55,52 +58,71 @@ class Database:
         cls._session.add(new_account)
         cls._session.commit()
 
+        _logger.info(f"Created new account: [{user_name}]")
+
     @classmethod
     def get_account_by_id(cls, account_id: int) -> Account | None:
+        _logger.debug(f"Getting account by ID: {account_id}")
         return cls._session.query(Account).filter(Account.id == account_id).first()
 
     @classmethod
     def get_account_by_user_name(cls, user_name: str) -> Account | None:
+        _logger.debug(f"Getting account by user name: {user_name}")
         return cls._session.query(Account).filter(Account.user_name == user_name).first()
 
     @classmethod
     def get_accounts(cls) -> list[type[Account]]:
+        _logger.debug("Getting all accounts")
         return cls._session.query(Account).all()
 
     @classmethod
     def update_account(cls, account: Account):
+        _logger.debug(f"Updating account: {account}")
         cls._session.add(account)
         cls._session.commit()
 
     @classmethod
     def delete_account(cls, account: Account):
+        _logger.debug(f"Deleting account: {account}")
         cls._session.delete(account)
         cls._session.commit()
 
     @classmethod
     def create_downloaded_song(cls, song_id: str, account: Account, path: str):
+        _logger.info(f"Creating new downloaded song: {song_id}")
+
         new_downloaded_song = DownloadedSong(song_id=song_id, download_path=path, account_id=account.id)
         cls._session.add(new_downloaded_song)
         cls._session.commit()
 
     @classmethod
     def get_downloaded_songs_by_account(cls, account: Account) -> list[type[DownloadedSong]]:
+        _logger.debug(f"Getting downloaded songs by account: {account}")
+
         return cls._session.query(DownloadedSong).filter(DownloadedSong.account_id == account.id).all()
 
     @classmethod
     def get_downloaded_songs_by_id(cls, song_id: str) -> DownloadedSong | None:
+        _logger.debug(f"Getting downloaded song by ID: {song_id}")
+
         return cls._session.query(DownloadedSong).filter(DownloadedSong.song_id == song_id).first()
 
     @classmethod
     def get_downloaded_songs(cls) -> list[type[DownloadedSong]]:
+        _logger.debug("Getting all downloaded songs")
+
         return cls._session.query(DownloadedSong).all()
 
     @classmethod
     def update_downloaded_song(cls, song: DownloadedSong):
+        _logger.debug(f"Updating downloaded song: {song}")
+
         cls._session.add(song)
         cls._session.commit()
 
     @classmethod
     def delete_downloaded_song(cls, song: DownloadedSong):
+        _logger.debug(f"Deleting downloaded song: {song}")
+
         cls._session.delete(song)
         cls._session.commit()
