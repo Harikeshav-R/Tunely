@@ -150,8 +150,8 @@ class Downloader:
         :rtype: str
         """
         return cls.session.tokens().get_token(
-            Constants.SPOTIFY_USER_READ_EMAIL, Constants.SPOTIFY_PLAYLIST_READ_PRIVATE,
-            Constants.SPOTIFY_USER_LIBRARY_READ, Constants.SPOTIFY_USER_FOLLOW_READ
+            'user-read-email', 'playlist-read-private',
+            'user-library-read', 'user-follow-read'
         ).access_token
 
     @classmethod
@@ -199,7 +199,7 @@ class Downloader:
             'Accept-Language': f'{Config.get("downloader", "language", Constants.CONFIG_DOWNLOADER_LANGUAGE)}',
             'Accept': 'application/json',
             'app-platform': 'WebPlayer'
-        }, {Constants.SPOTIFY_LIMIT: limit, Constants.SPOTIFY_OFFSET: offset}
+        }, {'limit': limit, 'offset': offset}
 
     @classmethod
     def invoke_url(cls, url: str, try_count: int = 0) -> tuple[str, dict]:
@@ -256,7 +256,7 @@ class Downloader:
         :rtype: bool
         :return: True if the user has a Spotify Premium subscription, False otherwise.
         """
-        result = cls.session.get_user_attribute(Constants.SPOTIFY_TYPE) == Constants.SPOTIFY_PREMIUM
+        result = cls.session.get_user_attribute("type") == "premium"
 
         if result:
             _logger.info("User has a Spotify Premium subscription")
