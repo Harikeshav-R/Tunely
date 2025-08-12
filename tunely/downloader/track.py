@@ -1,5 +1,7 @@
 import logging
+import math
 
+from pathlib import Path
 from typing import Any
 
 from tunely.utils.constants import Constants
@@ -124,3 +126,51 @@ class Track:
 
         except Exception as e:
             raise ValueError(f'Failed to parse TRACKS_URL response: {str(e)}\n{raw}')
+
+    @staticmethod
+    def get_song_lyrics(song_id: str, lyrics_file_path: Path) -> None:
+        """
+        Fetches and saves song lyrics, either unsynced or line synced, to a specified file path.
+
+        This method communicates with an external API to download the lyrics associated
+        with a given song ID. According to the sync type of the lyrics, it formats and
+        saves either unsynced or line-synced lyrics into the file at the specified path.
+
+        :param song_id: The unique identifier of the song.
+        :type song_id: str
+        :param lyrics_file_path: The path where the lyrics file will be saved.
+        :type lyrics_file_path: Path
+        :return: None
+        :raises ValueError: Raised if the lyrics cannot be fetched or are unavailable.
+        """
+        raw, lyrics = Downloader.invoke_url(f'https://spclient.wg.spotify.com/color-lyrics/v2/track/{song_id}')
+
+        if lyrics:
+            try:
+                formatted_lyrics = lyrics['lyrics']['lines']
+            except KeyError:
+                _logger.error(f'Failed to fetch lyrics: {song_id}')
+                raise ValueError(f'Failed to fetch lyrics: {song_id}')
+
+            if lyrics['lyrics']['syncType'] == "UNSYNCED":
+                with open(lyrics_file_path, 'w+', encoding='utf-8') as file:
+                    for line in formatted_lyrics:
+                        file.writelines(line['words'] + '\n')
+
+                _logger.info(f"Lyrics saved to {lyrics_file_path}")
+                return
+
+            elif lyrics['lyrics']['syncType'] == "LINE_SYNCED":
+                with open(lyrics_file_path, 'w+', encoding='utf-8') as file:
+                    for line in formatted_lyrics:
+                        timestamp = int(line['startTimeMs'])
+                        ts_minutes = str(math.floor(timestamp / 60000)).zfill(2)
+                        ts_seconds = str(math.floor((timestamp % 60000) / 1000)).zfill(2)
+                        ts_millis = str(math.floor(timestamp % 1000))[:2].zfill(2)
+                        file.writelines(f'[{ts_minutes}:{ts_seconds}.{ts_millis}]' + line['words'] + '\n')
+
+                _logger.info(f"Lyrics saved to {lyrics_file_path}")
+                return
+
+        _logger.error(f'Failed to fetch lyrics: {song_id}')
+        raise ValueError(f'Failed to fetch lyrics: {song_id}')
