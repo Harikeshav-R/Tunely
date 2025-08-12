@@ -37,13 +37,13 @@ class Helper:
         """
 
         tag = music_tag.load_file(file_path)
-        tag[Constants.SPOTIFY_ALBUMARTIST] = artists[0]
-        tag[Constants.SPOTIFY_ARTIST] = ", ".join(artists).strip(" ,")
-        tag[Constants.SPOTIFY_TRACKTITLE] = name
-        tag[Constants.SPOTIFY_ALBUM] = album_name
-        tag[Constants.SPOTIFY_YEAR] = release_year
-        tag[Constants.SPOTIFY_DISCNUMBER] = disc_number
-        tag[Constants.SPOTIFY_TRACKNUMBER] = track_number
+        tag["albumartist"] = artists[0]
+        tag["artist"] = ", ".join(artists).strip(" ,")
+        tag["tracktitle"] = name
+        tag["album"] = album_name
+        tag["year"] = release_year
+        tag["discnumber"] = disc_number
+        tag["tracknumber"] = track_number
         tag.save()
 
     @staticmethod
@@ -63,7 +63,7 @@ class Helper:
         """
         image = requests.get(thumbnail_url).content
         tags = music_tag.load_file(file_path)
-        tags[Constants.SPOTIFY_ARTWORK] = image
+        tags["artwork"] = image
         tags.save()
 
     @staticmethod
