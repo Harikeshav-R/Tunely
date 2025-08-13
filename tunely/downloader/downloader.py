@@ -15,13 +15,14 @@ from librespot.metadata import PlayableId
 
 from tunely.utils.config import Config
 from tunely.utils.constants import Constants
-from tunely.utils.db import Database
+from tunely.utils.db import Account, Database
 
 _logger = logging.getLogger(__name__)
 
 
 class Downloader:
     session: Session = None
+    account: Account = None
 
     @classmethod
     def login(cls, user_name: str = None) -> None:
@@ -42,17 +43,17 @@ class Downloader:
             print(url)
 
         if user_name:
-            account = Database.get_account_by_user_name(user_name)
+            cls.account = Database.get_account_by_user_name(user_name)
 
-            if account is not None:
+            if cls.account is not None:
                 try:
                     _logger.info("Stored credentials found, trying to login using stored credentials")
                     cls.session = Session.Builder().stored(
                         json.dumps(
                             {
-                                "username": account.user_name,
-                                "credentials": account.credentials,
-                                "type": account.type
+                                "username": cls.account.user_name,
+                                "credentials": cls.account.credentials,
+                                "type": cls.account.type
                             }
                         )
                     ).create()
@@ -60,9 +61,9 @@ class Downloader:
                     return
 
                 except:
-                    Database.delete_account(account=account)
+                    Database.delete_account(account=cls.account)
                     _logger.warning(
-                        f"Failed to login using stored credentials for user {account.user_name}, deleting account. Trying to login using OAuth."
+                        f"Failed to login using stored credentials for user {cls.account.user_name}, deleting account. Trying to login using OAuth."
                     )
                     pass
 
@@ -99,6 +100,7 @@ class Downloader:
                                             type_=credentials["type"])
 
                     local_credentials_file_path.unlink(missing_ok=True)
+                    cls.account = Database.get_account_by_user_name(credentials["username"])
 
                     _logger.info("Logged in successfully")
 
