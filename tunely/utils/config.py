@@ -40,8 +40,8 @@ class Config:
             'log_level': Constants.CONFIG_DEFAULT_LOG_LEVEL,
             'log_max_bytes': Constants.CONFIG_DEFAULT_LOG_MAX_BYTES,
             'log_backup_count': Constants.CONFIG_DEFAULT_LOG_BACKUP_COUNT,
-            'log_format': Constants.CONFIG_DEFAULT_LOG_FORMAT,
-            'log_date_format': Constants.CONFIG_DEFAULT_LOG_DATE_FORMAT,
+            # 'log_format': Constants.CONFIG_DEFAULT_LOG_FORMAT,
+            # 'log_date_format': Constants.CONFIG_DEFAULT_LOG_DATE_FORMAT,
         }
         cls._config['downloader'] = {
             'login_retry_attempts': Constants.CONFIG_DOWNLOADER_LOGIN_RETRY_ATTEMPTS,
