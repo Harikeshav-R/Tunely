@@ -47,7 +47,7 @@ class Helper:
         tag.save()
 
     @staticmethod
-    def set_music_thumbnail(file_path: str, thumbnail_url: str) -> None:
+    def set_music_thumbnail(file_path: Path, thumbnail_url: str) -> None:
         """
         Sets a thumbnail image for the provided music file from a specified URL.
 
