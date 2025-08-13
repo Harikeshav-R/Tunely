@@ -5,6 +5,7 @@ description = "Music Downloader"
 requires-python = ">=3.13"
 dependencies = [
     "colorlog>=6.9.0",
+    "ffmpeg-python>=0.2.0",
     "librespot",
     "music-tag>=0.4.3",
     "platformdirs>=4.3.8",
