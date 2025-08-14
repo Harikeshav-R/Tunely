@@ -23,6 +23,8 @@ class Account(Base):
     credentials = Column(String, nullable=False)
     type = Column(String, nullable=False)
 
+    downloaded_songs = relationship("DownloadedSong", back_populates="account")
+
 
 class DownloadedSong(Base):
     __tablename__ = 'downloaded_songs'
@@ -46,7 +48,8 @@ class DownloadedSong(Base):
 
 class Database:
     os.makedirs(Constants.CONFIG_DEFAULT_DATABASE_DIR, exist_ok=True)
-    _engine = create_engine(f"sqlite://{Config.get("database", "db_file")}", echo=True)
+    _engine = create_engine(f"sqlite:///{Config.get("database", "db_file", Constants.CONFIG_DEFAULT_DATABASE_FILE)}",
+                            echo=True)
     Base.metadata.create_all(_engine)
 
     _Session = sessionmaker(bind=_engine)

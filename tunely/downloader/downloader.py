@@ -102,6 +102,16 @@ class Downloader:
                     local_credentials_file_path.unlink(missing_ok=True)
                     cls.account = Database.get_account_by_user_name(credentials["username"])
 
+                    cls.session = Session.Builder().stored(
+                        json.dumps(
+                            {
+                                "username": cls.account.user_name,
+                                "credentials": cls.account.credentials,
+                                "type": cls.account.type
+                            }
+                        )
+                    ).create()
+
                     _logger.info("Logged in successfully")
 
                     break
