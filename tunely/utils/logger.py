@@ -1,4 +1,3 @@
-import inspect
 import logging
 
 from logging.handlers import RotatingFileHandler
@@ -22,26 +21,32 @@ class Logger:
         if Logger._logger is not None:
             return
 
+        # Main package logger
         Logger._logger = logging.getLogger("PackageLogger")
         Logger._logger.setLevel(Logger._log_level)
         Logger._logger.propagate = False
 
+        # Ensure log directory exists
         Logger._log_file.parent.mkdir(parents=True, exist_ok=True)
 
+        # File handler (rotating)
         file_handler = RotatingFileHandler(
             filename=Logger._log_file,
             maxBytes=Logger._max_bytes,
             backupCount=Logger._backup_count,
-            encoding='utf-8'
+            encoding="utf-8"
         )
         file_handler.setFormatter(Logger._formatter)
 
+        # Console handler
         console_handler = logging.StreamHandler()
         console_handler.setFormatter(Logger._formatter)
 
+        # Attach handlers to our package logger
         Logger._logger.addHandler(file_handler)
         Logger._logger.addHandler(console_handler)
 
+        # Also attach handlers to the root logger for external libraries
         root_logger = logging.getLogger()
         root_logger.setLevel(Logger._log_level)
         root_logger.addHandler(file_handler)
@@ -54,14 +59,8 @@ class Logger:
 
     @staticmethod
     def _log(level, msg, *args, **kwargs):
-        frame = inspect.currentframe()
-
-        caller_frame = frame.f_back.f_back
-        extra = {
-            "module": caller_frame.f_globals.get("__name__", ""),
-            "funcName": caller_frame.f_code.co_name
-        }
-        Logger.get_logger().log(level, msg, *args, extra=extra, **kwargs)
+        # stacklevel=3 ensures caller info points to the original caller
+        Logger.get_logger().log(level, msg, *args, stacklevel=3, **kwargs)
 
     @staticmethod
     def debug(msg, *args, **kwargs):
