@@ -35,11 +35,17 @@ class Logger:
             encoding='utf-8'
         )
         file_handler.setFormatter(Logger._formatter)
-        Logger._logger.addHandler(file_handler)
 
         console_handler = logging.StreamHandler()
         console_handler.setFormatter(Logger._formatter)
+
+        Logger._logger.addHandler(file_handler)
         Logger._logger.addHandler(console_handler)
+
+        root_logger = logging.getLogger()
+        root_logger.setLevel(Logger._log_level)
+        root_logger.addHandler(file_handler)
+        root_logger.addHandler(console_handler)
 
     @staticmethod
     def get_logger():
